@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">magib8ball</string>
+    <string name="app_name">magic8ball</string>
+    <string name="ask_a_question">Ask a question!</string>
+    <string name="shake">Shake</string>
+    <string name="magic_8_ball">Magic 8 Ball</string>
+
+    <!-- Magic begins here -->
+    <string name="eightball_response_none">No response yet.</string>
+    <string name="eightball_response_0">It is certain.</string>
+    <string name="eightball_response_1">It is decidedly so.</string>
+    <string name="eightball_response_2">Without a doubt.</string>
+    <string name="eightball_response_3">Yes definitely.</string>
+    <string name="eightball_response_4">You may rely on it.</string>
+    <string name="eightball_response_5">As I see it, yes.</string>
+    <string name="eightball_response_6">Most likely</string>
+    <string name="eightball_response_7">Outlook good.</string>
+    <string name="eightball_response_8">Yes.</string>
+    <string name="eightball_response_9">Signs point to yes.</string>
+    <string name="eightball_response_10">Reply hazy, try again.</string>
+    <string name="eightball_response_11">Ask again later.</string>
+    <string name="eightball_response_12">Better not tell you now.</string>
+    <string name="eightball_response_13">Cannot predict now.</string>
+    <string name="eightball_response_14">Concentrate and ask again.</string>
+    <string name="eightball_response_15">Don\'t count on it.</string>
+    <string name="eightball_response_16">My reply is no.</string>
+    <string name="eightball_response_17">My sources say no.</string>
+    <string name="eightball_response_18">Outlook not so good.</string>
+    <string name="eightball_response_19">Very doubtful.</string>
 </resources>
