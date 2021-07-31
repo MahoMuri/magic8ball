@@ -8,14 +8,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
-import java.lang.Math.sqrt
 import java.util.*
 
 
@@ -23,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button : Button
     private lateinit var image: ImageView
     private lateinit var response: TextView
+    private lateinit var questionInput: EditText
     private var sensorManager: SensorManager? = null
     private var acceleration = 0f
     private var currentAcceleration = 0f
@@ -36,13 +34,13 @@ class MainActivity : AppCompatActivity() {
         // Variable declarations
         button = findViewById(R.id.btn)
         image = findViewById(R.id.magic8ball)
-        response = findViewById(R.id.responseText)
+        response = findViewById(R.id.responseGenerator)
+        questionInput = findViewById(R.id.questionInput)
+
 
 
         // Variables for shake detection
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        Objects.requireNonNull(sensorManager)!!.registerListener(sensorListener, sensorManager!!
-            .getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         acceleration = 10f
         currentAcceleration = SensorManager.GRAVITY_EARTH
         lastAcceleration = SensorManager.GRAVITY_EARTH
@@ -71,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     image.setImageDrawable(td)
                     td.startTransition(500)
-                    response.text = "Shaking done through Button! Resounding Success"
+                    response.text = EightBallLogic.generateResponse(this@MainActivity, questionInput.text)
                     response.startAnimation(AnimationUtils.loadAnimation(this@MainActivity, R.anim.fadein))
                 }
                 override fun onAnimationRepeat(animation: Animation?) {
@@ -93,7 +91,10 @@ class MainActivity : AppCompatActivity() {
             currentAcceleration = kotlin.math.sqrt((x * x + y * y + z * z).toDouble()).toFloat()
             val delta: Float = currentAcceleration - lastAcceleration
             acceleration = acceleration * 0.9f + delta
-            if (acceleration > 20) {
+
+            // Only proceed is acceleration is greater than 25
+            if (acceleration > 25f) {
+                Log.d("Sensor", "Shake detected w/ speed $acceleration")
                 val animation = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
                 image.startAnimation(animation)
 
@@ -116,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         )
                         image.setImageDrawable(td)
                         td.startTransition(500)
-                        response.text = "Shaking done through Shake! Resounding Success"
+                        response.text = EightBallLogic.generateResponse(this@MainActivity, questionInput.text)
                         response.startAnimation(AnimationUtils.loadAnimation(this@MainActivity, R.anim.fadein))
                     }
                     override fun onAnimationRepeat(animation: Animation?) {
