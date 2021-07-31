@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/questionInput"
         app:layout_constraintVertical_bias="0.107" />
 
     <ImageView
@@ -32,7 +32,7 @@
         app:srcCompat="@drawable/magic_8_ball" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/questionInput"
         android:layout_width="268dp"
         android:layout_height="52dp"
         android:layout_marginTop="44dp"
@@ -46,4 +46,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/magic8ball"
         tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/responseGenerator"
+        android:layout_width="97dp"
+        android:layout_height="103dp"
+        android:alpha="0"
+        android:gravity="center"
+        android:text="@string/eightball_response_none"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#FFEB3B"
+        app:layout_constraintBottom_toBottomOf="@+id/magic8ball"
+        app:layout_constraintEnd_toEndOf="@+id/magic8ball"
+        app:layout_constraintStart_toStartOf="@+id/magic8ball"
+        app:layout_constraintTop_toTopOf="@+id/magic8ball" />
 </androidx.constraintlayout.widget.ConstraintLayout>
