@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">magib8ball</string>
+    <string name="app_name">Magic 8 Ball</string>
+    <string name="ask_a_question">Ask a question!</string>
+    <string name="shake">Shake</string>
+    <string name="magic_8_ball">Magic 8 Ball</string>
+    <string name="or_shake_the_phone">or shake the phone!</string>
 </resources>

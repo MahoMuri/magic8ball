@@ -23,7 +23,7 @@
         android:id="@+id/magic8ball"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="44dp"
         android:contentDescription="@string/magic_8_ball"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
@@ -46,4 +46,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/magic8ball"
         tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/responseText"
+        android:layout_width="98dp"
+        android:layout_height="104dp"
+        android:textAlignment="center"
+        android:textColor="#FFEB3B"
+        app:layout_constraintBottom_toBottomOf="@+id/magic8ball"
+        app:layout_constraintEnd_toEndOf="@+id/magic8ball"
+        app:layout_constraintStart_toStartOf="@+id/magic8ball"
+        app:layout_constraintTop_toTopOf="@+id/magic8ball" />
+
+    <TextView
+        android:id="@+id/shakeInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/or_shake_the_phone"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#4C4B4B"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn"
+        app:layout_constraintVertical_bias="0.159" />
 </androidx.constraintlayout.widget.ConstraintLayout>
