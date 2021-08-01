@@ -9,10 +9,11 @@
     tools:showIn="@layout/activity_scrolling">
 
     <TextView
+        android:id="@+id/questionHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:fontFamily="@font/libre_franklin"
-        android:text="@string/large_text" />
+        android:text="" />
 
 </androidx.core.widget.NestedScrollView>

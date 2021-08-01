@@ -10,15 +10,11 @@ class EightBallLogic {
 
         @JvmStatic
         fun generateResponse(ctx: Context, input: CharSequence): CharSequence {
-            if (!question_regex.containsMatchIn(input))
-                return internalGetString(ctx, 10, 15)
-            return internalGetString(ctx, 0, 20)
-        }
-
-        @JvmStatic
-        private fun internalGetString(ctx: Context, start: Int, end: Int): String {
             val responsesArray = ctx.resources.getStringArray(R.array.responsesArray)
-            return responsesArray[Random.nextInt(start, end)]
+
+            if (!question_regex.containsMatchIn(input))
+                return responsesArray[Random.nextInt(10, 15)]
+            return responsesArray[Random.nextInt(0, 20)]
         }
     }
 }

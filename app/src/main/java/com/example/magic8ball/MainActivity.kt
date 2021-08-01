@@ -2,12 +2,12 @@ package com.example.magic8ball
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.drawable.TransitionDrawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -15,22 +15,31 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var button : Button
+    private lateinit var button: Button
     private lateinit var image: ImageView
     private lateinit var response: TextView
     private lateinit var questionInput: TextInputLayout
     private lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
+    private lateinit var db: DatabaseReference
+    private lateinit var mPrefs: SharedPreferences
     private var sensorManager: SensorManager? = null
     private var acceleration = 0f
     private var currentAcceleration = 0f
@@ -49,6 +58,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar = findViewById(R.id.main_toolbar)
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
+
+        db = Firebase.database.reference
+        mPrefs = getSharedPreferences("Prefs", MODE_PRIVATE)
 
         // Set custom Action bar
         setSupportActionBar(toolbar)
@@ -84,6 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
+                    val question = questionInput.editText?.text.toString()
                     val td = TransitionDrawable(
                         arrayOf(
                             ResourcesCompat.getDrawable(resources, R.drawable.magic_8_ball, theme),
@@ -96,15 +109,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     )
                     image.setImageDrawable(td)
                     td.startTransition(500)
-                    response.text = EightBallLogic.generateResponse(this@MainActivity, questionInput.editText?.text.toString())
-                    response.startAnimation(AnimationUtils.loadAnimation(this@MainActivity, R.anim.fadein))
+                    response.text = EightBallLogic.generateResponse(this@MainActivity, question)
+
+                    writeNewUser(NanoIdUtils.randomNanoId(), question, response.text.toString())
+
+                    response.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            this@MainActivity,
+                            R.anim.fadein
+                        )
+                    )
                 }
+
                 override fun onAnimationRepeat(animation: Animation?) {
                     // Ignore since animation does not repeat. Cannot omit either since it is required to implement the function
                 }
 
             })
         }
+    }
+
+
+    private fun writeNewUser(userId: String, question: String, response: String) {
+        val user = User()
+        user.question.add(question)
+        user.response.add(response)
+        db.child("users").child(userId).setValue(user)
+        val editor = mPrefs.edit()
+        editor.putString("UID", userId).apply()
+
+
     }
 
     // Declaring function for hardware shake detection
@@ -119,8 +153,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val delta: Float = currentAcceleration - lastAcceleration
             acceleration = acceleration * 0.9f + delta
 
-            // Only proceed is acceleration is greater than 25
-            if (acceleration > 25f) {
+            // Only proceed is acceleration is greater than 20
+            if (acceleration > 20f) {
                 Log.d("Sensor", "Shake detected w/ speed $acceleration")
                 val animation = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
                 image.startAnimation(animation)
@@ -134,7 +168,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     override fun onAnimationEnd(animation: Animation?) {
                         val td = TransitionDrawable(
                             arrayOf(
-                                ResourcesCompat.getDrawable(resources, R.drawable.magic_8_ball, theme),
+                                ResourcesCompat.getDrawable(
+                                    resources,
+                                    R.drawable.magic_8_ball,
+                                    theme
+                                ),
                                 ResourcesCompat.getDrawable(
                                     resources,
                                     R.drawable.magic_8_ball_response,
@@ -144,9 +182,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         )
                         image.setImageDrawable(td)
                         td.startTransition(500)
-                        response.text = EightBallLogic.generateResponse(this@MainActivity, questionInput.editText?.text.toString())
-                        response.startAnimation(AnimationUtils.loadAnimation(this@MainActivity, R.anim.fadein))
+                        response.text = EightBallLogic.generateResponse(
+                            this@MainActivity,
+                            questionInput.editText?.text.toString()
+                        )
+                        response.startAnimation(
+                            AnimationUtils.loadAnimation(
+                                this@MainActivity,
+                                R.anim.fadein
+                            )
+                        )
                     }
+
                     override fun onAnimationRepeat(animation: Animation?) {
                         // Ignore since animation does not repeat. Cannot omit either since it is required to implement the function
                     }
@@ -154,14 +201,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 })
             }
         }
+
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     }
+
     override fun onResume() {
-        sensorManager?.registerListener(sensorListener, sensorManager!!.getDefaultSensor(
-            Sensor .TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL
+        sensorManager?.registerListener(
+            sensorListener, sensorManager!!.getDefaultSensor(
+                Sensor.TYPE_ACCELEROMETER
+            ), SensorManager.SENSOR_DELAY_NORMAL
         )
         super.onResume()
     }
+
     override fun onPause() {
         sensorManager!!.unregisterListener(sensorListener)
         super.onPause()

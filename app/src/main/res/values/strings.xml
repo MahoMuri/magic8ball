@@ -8,6 +8,7 @@
     <string name="open_question_history">Open question history</string>
     <string name="openNavDrawer">Navigation Drawer Open </string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
+    <string name="questionHistory"><b>Question:</b> %1$s \n<b>Response:</b> %2$s</string>
 
     <!-- Magic begins here -->
     <string-array name="responsesArray">
