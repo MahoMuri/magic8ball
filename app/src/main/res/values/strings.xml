@@ -8,7 +8,7 @@
     <string name="open_question_history">Open question history</string>
     <string name="openNavDrawer">Navigation Drawer Open </string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
-    <string name="questionHistory"><b>Question:</b> %1$s \n<b>Response:</b> %2$s</string>
+    <string name="questionHistory">Question: %1$s \nResponse: %2$s\n</string>
 
     <!-- Magic begins here -->
     <string-array name="responsesArray">
@@ -124,4 +124,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="clear_question_history">Clear question history</string>
 </resources>

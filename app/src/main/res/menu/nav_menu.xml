@@ -6,6 +6,10 @@
             <item android:title="@string/open_question_history"
                 android:icon="@drawable/ic_baseline_access_time_24"
                 />
+            <item android:title="@string/clear_question_history"
+                android:icon="@drawable/ic_baseline_delete_forever_24"
+
+                />
         </menu>
     </item>
 </menu>

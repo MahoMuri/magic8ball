@@ -12,7 +12,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -42,6 +41,8 @@ class ScrollingActivity : AppCompatActivity() {
         displayHistory = findViewById(R.id.questionHistory)
         mPrefs = getSharedPreferences("Prefs", MODE_PRIVATE)
         val uid = mPrefs.getString("UID", "")
+        val qHis = mPrefs.getString("QHIS", "")
+
         userReference = uid?.let { Firebase.database.reference.child("users").child(it) }!!
 
         // Enable the back button
@@ -49,21 +50,21 @@ class ScrollingActivity : AppCompatActivity() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        displayHistory.text = qHis
         val userListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue<User>()
                 if (user != null) {
                     displayHistory.append(getString(R.string.questionHistory, user.question, user.response))
+                    val editor = mPrefs.edit()
+                    editor.putString("QHIS", displayHistory.text.toString()).apply()
                 }
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Failed to get user", error.toException())
             }
         }
-
         userReference.addValueEventListener(userListener)
     }
 

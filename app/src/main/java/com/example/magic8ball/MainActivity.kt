@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     td.startTransition(500)
                     response.text = EightBallLogic.generateResponse(this@MainActivity, question)
 
+                    // Write user to database
                     writeNewUser(NanoIdUtils.randomNanoId(), question, response.text.toString())
 
                     response.startAnimation(
@@ -129,18 +130,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-
-    private fun writeNewUser(userId: String, question: String, response: String) {
-        val user = User()
-        user.question.add(question)
-        user.response.add(response)
-        db.child("users").child(userId).setValue(user)
-        val editor = mPrefs.edit()
-        editor.putString("UID", userId).apply()
-
-
-    }
-
     // Declaring function for hardware shake detection
     private val sensorListener: SensorEventListener = object : SensorEventListener {
 
@@ -148,6 +137,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val x = event.values[0]
             val y = event.values[1]
             val z = event.values[2]
+
+            // Calculate for acceleration by getting the square root of the (x^2 + y^2 + z^2) coordinates of the phone
             lastAcceleration = currentAcceleration
             currentAcceleration = kotlin.math.sqrt((x * x + y * y + z * z).toDouble()).toFloat()
             val delta: Float = currentAcceleration - lastAcceleration
@@ -155,7 +146,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             // Only proceed is acceleration is greater than 20
             if (acceleration > 20f) {
-                Log.d("Sensor", "Shake detected w/ speed $acceleration")
                 val animation = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
                 image.startAnimation(animation)
 
@@ -166,6 +156,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
 
                     override fun onAnimationEnd(animation: Animation?) {
+                        val question = questionInput.editText?.text.toString()
                         val td = TransitionDrawable(
                             arrayOf(
                                 ResourcesCompat.getDrawable(
@@ -184,8 +175,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         td.startTransition(500)
                         response.text = EightBallLogic.generateResponse(
                             this@MainActivity,
-                            questionInput.editText?.text.toString()
+                            question
                         )
+                        writeNewUser(NanoIdUtils.randomNanoId(), question, response.text.toString())
                         response.startAnimation(
                             AnimationUtils.loadAnimation(
                                 this@MainActivity,
@@ -221,13 +213,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Navbar item selected handler
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val itemName = item.toString()
 
-        if (itemName == "Open question history") {
-            val intent = Intent(this, ScrollingActivity::class.java)
-            startActivity(intent)
+        when(item.toString()) {
+            "Open question history" -> {
+                val intent = Intent(this, ScrollingActivity::class.java)
+                startActivity(intent)
+            }
+            "Clear question history" -> {
+                val editor = mPrefs.edit()
+                editor.remove("QHIS").apply()
+                Toast.makeText(this, "Question History deleted!", Toast.LENGTH_SHORT).show()
+            }
         }
         return false
+    }
+
+    // Private method for adding user to database
+    private fun writeNewUser(userId: String, question: String, response: String) {
+        val user = User()
+        user.question.add(question)
+        user.response.add(response)
+        db.child("users").child(userId).setValue(user)
+        val editor = mPrefs.edit()
+        editor.putString("UID", userId).apply()
+
+
     }
 
 
